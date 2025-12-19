@@ -20,67 +20,87 @@ public class CreateWindow extends JFrame {
 
     private void initialize() {
         setTitle("BN University | Sign Up");
-        setSize(400, 420);
-        setLocationRelativeTo(null);
+        setSize(800, 600); // full size
+        setLocationRelativeTo(null); // center on screen
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(null);
         setResizable(false);
+        getContentPane().setLayout(null);
 
-        JLabel lblTitle = new JLabel("Create New Account");
-        lblTitle.setBounds(100, 20, 200, 30);
-        lblTitle.setFont(new Font("Tahoma", Font.BOLD, 16));
-        getContentPane().add(lblTitle);
+        // Full-screen background image
+        ImageIcon bgIcon = new ImageIcon("C:\\Users\\PersonalPC\\Downloads\\598713188_883435454342700_7772630111758139937_n.png");
+        Image bgImg = bgIcon.getImage().getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
+        JLabel lblBackground = new JLabel(new ImageIcon(bgImg));
+        lblBackground.setBounds(0, 0, getWidth(), getHeight());
+        getContentPane().add(lblBackground);
+        lblBackground.setLayout(null); // so we can add form on top
 
-        JLabel lblUsername = new JLabel("Username:");
-        lblUsername.setBounds(36, 70, 100, 25);
-        getContentPane().add(lblUsername);
+        // Centered form panel
+        JPanel formPanel = new JPanel(null);
+        formPanel.setBounds((getWidth() - 400) / 2, (getHeight() - 350) / 2, 400, 350);
+        formPanel.setBackground(new Color(255, 255, 255, 230)); // semi-transparent
+        formPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        lblBackground.add(formPanel);
+
+        // Title
+        JLabel lblTitle = new JLabel("Create New Account", SwingConstants.CENTER);
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitle.setBounds(0, 20, 400, 30);
+        formPanel.add(lblTitle);
+
+        // Username
+        JLabel lblUsername = new JLabel("Full Name:");
+        lblUsername.setBounds(40, 70, 100, 25);
+        formPanel.add(lblUsername);
 
         txtUsername = new JTextField();
-        txtUsername.setBounds(110, 70, 160, 25);
-        getContentPane().add(txtUsername);
+        txtUsername.setBounds(150, 70, 200, 25);
+        formPanel.add(txtUsername);
 
+        // Email
         JLabel lblEmail = new JLabel("Email:");
-        lblEmail.setBounds(36, 110, 100, 25);
-        getContentPane().add(lblEmail);
+        lblEmail.setBounds(40, 110, 100, 25);
+        formPanel.add(lblEmail);
 
         txtEmail = new JTextField();
-        txtEmail.setBounds(110, 110, 160, 25);
-        getContentPane().add(txtEmail);
+        txtEmail.setBounds(150, 110, 200, 25);
+        formPanel.add(txtEmail);
 
+        // Password
         JLabel lblPassword = new JLabel("Password:");
-        lblPassword.setBounds(36, 146, 100, 25);
-        getContentPane().add(lblPassword);
+        lblPassword.setBounds(40, 150, 100, 25);
+        formPanel.add(lblPassword);
 
         txtPassword = new JPasswordField();
-        txtPassword.setBounds(110, 146, 160, 25);
-        getContentPane().add(txtPassword);
+        txtPassword.setBounds(150, 150, 200, 25);
+        formPanel.add(txtPassword);
 
+        // OTP fields (hidden initially)
         JLabel lblOTP = new JLabel("Enter OTP:");
-        lblOTP.setBounds(36, 182, 100, 25);
+        lblOTP.setBounds(40, 190, 100, 25);
         lblOTP.setVisible(false);
-        getContentPane().add(lblOTP);
+        formPanel.add(lblOTP);
 
         txtOTP = new JTextField();
-        txtOTP.setBounds(110, 182, 79, 25);
+        txtOTP.setBounds(150, 190, 100, 25);
         txtOTP.setVisible(false);
-        getContentPane().add(txtOTP);
+        formPanel.add(txtOTP);
 
-        btnSendOTP = new JButton("OTP");
-        btnSendOTP.setBounds(191, 182, 79, 25);
-        getContentPane().add(btnSendOTP);
+        btnSendOTP = new JButton("Send OTP");
+        btnSendOTP.setBounds(260, 190, 90, 25);
+        formPanel.add(btnSendOTP);
 
         btnVerifyOTP = new JButton("Verify OTP");
-        btnVerifyOTP.setBounds(110, 215, 120, 25);
+        btnVerifyOTP.setBounds(150, 230, 120, 25);
         btnVerifyOTP.setVisible(false);
-        getContentPane().add(btnVerifyOTP);
+        formPanel.add(btnVerifyOTP);
 
+        // Action listeners
         btnSendOTP.addActionListener(e -> sendOTP(lblOTP));
         btnVerifyOTP.addActionListener(e -> verifyAndCreateAccount());
     }
 
     private void sendOTP(JLabel lblOTP) {
         String email = txtEmail.getText().trim();
-
         if (email.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter an email first!");
             return;
@@ -96,7 +116,6 @@ public class CreateWindow extends JFrame {
         }
     }
 
-    
     private void verifyAndCreateAccount() {
         String enteredOTP = txtOTP.getText().trim();
 
@@ -121,8 +140,8 @@ public class CreateWindow extends JFrame {
 
         if (Queries.createAccount(username, email, password)) {
             JOptionPane.showMessageDialog(this, "Account created successfully!");
-            loginWindow.showAgain();   
-            dispose();                
+            new LoginWindow().showWindow();
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to create account!");
         }
@@ -131,5 +150,8 @@ public class CreateWindow extends JFrame {
     public void showWindow() {
         setVisible(true);
     }
-}
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new CreateWindow(null).showWindow());
+    }
+}
